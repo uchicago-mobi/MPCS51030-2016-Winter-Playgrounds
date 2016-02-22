@@ -16,29 +16,47 @@ label.numberOfLines = 3
 let regex = try! NSRegularExpression(pattern: "<.*?>", options: [.CaseInsensitive])
 let range = NSMakeRange(0, string.characters.count)
 let htmlLessString :String = regex.stringByReplacingMatchesInString(string, options: [],
-    range:range ,
-    withTemplate: "")
+  range:range ,
+  withTemplate: "")
 print(htmlLessString)
 
 
 ///:  Use the html for format the string using `NSAttributedString`.
 var attrStr = try! NSAttributedString(
-        data: string.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!,
-        options: [ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType],
-        documentAttributes: nil)
+  data: string.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!,
+  options: [ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType],
+  documentAttributes: nil)
 label.attributedText = attrStr
 
 
+///: # Extension of `String`
+
 extension String {
+  
+  /// Convert HTML to an `NSAtributedString`
   func html2attributedString() -> NSAttributedString {
     let attrStr = try! NSAttributedString(
-        data: self.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!,
-        options: [ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType],
-        documentAttributes: nil)
+      data: self.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!,
+      options: [ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType],
+      documentAttributes: nil)
     return attrStr
+  }
+  
+  /// Test if a string contains a string
+  func contains(s: String) -> Bool {
+    return (self.rangeOfString(s) != nil) ? true : false
+  }
+  
+  /// Truncate a string to a given length
+  func trunc(length: Int, trailing: String? = "...") -> String {
+    if self.characters.count > length {
+      return self.substringToIndex(self.startIndex.advancedBy(length)) + (trailing ?? "")
+    } else {
+      return self
+    }
   }
 }
 
 label.attributedText = "This is an HTML string.  This word is <b>bold</b>. This contains a '&nbsp;&nbsp;'".html2attributedString()
 
-  
+
